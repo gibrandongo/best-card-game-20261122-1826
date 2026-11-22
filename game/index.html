@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ember Duel — a card duel of suits and nerve</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="table">
+  <div id="felt">
+    <header id="topbar">
+      <div id="roundLabel" class="hud">ROUND 1</div>
+      <div id="scoreLabel" class="hud">TRICKS 0 – 0</div>
+      <button id="muteBtn" class="hudBtn" type="button" title="Mute (M)">SOUND ON</button>
+    </header>
+
+    <section id="opponentZone" class="zone">
+      <div id="opponentInfo" class="playerInfo">
+        <div id="opponentName" class="playerName">VESK, THE CINDER WARDEN</div>
+        <div id="opponentLife" class="lifeBar" aria-label="Opponent life">
+          <div id="opponentLifeFill" class="lifeFill"></div>
+          <span id="opponentLifeText" class="lifeText">20 / 20</span>
+        </div>
+        <div id="opponentTell" class="tell">Vesk is thinking…</div>
+      </div>
+      <div id="opponentHand" class="hand opponentHand"></div>
+    </section>
+
+    <section id="midfield">
+      <div id="playedOpponent" class="playedSlot"></div>
+      <div id="versus">
+        <div id="trickBanner" class="banner">PLAY A CARD</div>
+        <div id="trickDetail" class="detail">Match Vesk's suit aura or beat it with raw power.</div>
+        <div id="deckPile" class="deckPile" title="Deck">
+          <span id="deckCount">30</span>
+        </div>
+      </div>
+      <div id="playedPlayer" class="playedSlot"></div>
+    </section>
+
+    <section id="playerZone" class="zone">
+      <div id="playerHand" class="hand playerHand"></div>
+      <div id="playerInfo" class="playerInfo">
+        <div id="playerName" class="playerName">YOU — EMBERBORN</div>
+        <div id="playerLife" class="lifeBar" aria-label="Your life">
+          <div id="playerLifeFill" class="lifeFill"></div>
+          <span id="playerLifeText" class="lifeText">20 / 20</span>
+        </div>
+        <div id="playerHint" class="hint">Click a card or press 1–5 · D cycles a card · Enter plays</div>
+      </div>
+    </section>
+
+    <div id="streakBadge" class="streakBadge hidden">STREAK ×2</div>
+  </div>
+
+  <div id="titleScreen" class="overlay">
+    <div class="titleCard">
+      <div class="titleEmber">▲ ● ◆ ★</div>
+      <h1>EMBER DUEL</h1>
+      <p class="tagline">A duel of suits, nerve and timing.<br>Outwit Vesk, the Cinder Warden, before your ember dies.</p>
+      <div class="rulesBox">
+        <div class="ruleRow"><span class="ruleGlyph ember">▲</span><b>Ember</b> burns <b>Thorn</b></div>
+        <div class="ruleRow"><span class="ruleGlyph thorn">◆</span><b>Thorn</b> chokes <b>Tide</b></div>
+        <div class="ruleRow"><span class="ruleGlyph tide">●</span><b>Tide</b> drowns <b>Ember</b></div>
+        <div class="ruleRow"><span class="ruleGlyph star">★</span><b>Star</b> answers to no suit</div>
+        <div class="ruleNote">Win a trick: power = value + 2 when your suit beats theirs. A Crown 10 wins ties. Win two tricks in a row and your next win deals +2 damage. Vesk's aura betrays the suit he will play — read it, counter it.</div>
+      </div>
+      <button id="startBtn" class="bigBtn" type="button">BEGIN THE DUEL</button>
+      <p class="keysHint">Mouse or keys 1–5 to play · D to cycle a card · M to mute</p>
+    </div>
+  </div>
+
+  <div id="endScreen" class="overlay hidden">
+    <div class="endCard">
+      <div id="endEmblem" class="endEmblem">★</div>
+      <h1 id="endTitle">VICTORY</h1>
+      <p id="endLine" class="endLine">Vesk's ember is out.</p>
+      <div id="endScore" class="endScore">TRICKS 7 – 4 · LIFE 8 – 0</div>
+      <button id="againBtn" class="bigBtn" type="button">DUEL AGAIN</button>
+      <p class="keysHint">Press Enter to duel again</p>
+    </div>
+  </div>
+
+  <div id="confettiLayer"></div>
+</div>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

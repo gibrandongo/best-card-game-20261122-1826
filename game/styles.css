@@ -1,0 +1,181 @@
+/* Ember Duel — table, cards and overlays. All art is CSS: no images, no network. */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: #171019;
+  font-family: Georgia, 'Times New Roman', serif;
+  color: #f3e9d2;
+  overflow: hidden;
+  user-select: none;
+}
+#table { position: relative; width: 100vw; height: 100vh; min-width: 960px; min-height: 640px; }
+#felt {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 42%, #3d6b4f 0%, #2a4d38 45%, #1c3527 100%);
+  border: 14px solid #4a2f1d;
+  outline: 3px solid #c9a227;
+  outline-offset: -17px;
+  display: flex; flex-direction: column;
+  padding: 10px 28px 14px;
+}
+
+/* ---- top bar ---- */
+#topbar { display: flex; align-items: center; gap: 16px; height: 44px; }
+.hud {
+  background: rgba(0,0,0,.45); border: 1px solid #c9a227; border-radius: 6px;
+  padding: 6px 14px; font-size: 17px; font-weight: bold; letter-spacing: 2px; color: #ffe9a8;
+}
+.hudBtn {
+  margin-left: auto; background: rgba(0,0,0,.45); border: 1px solid #c9a227; border-radius: 6px;
+  padding: 6px 12px; font-family: inherit; font-size: 14px; font-weight: bold; letter-spacing: 1px;
+  color: #ffe9a8; cursor: pointer;
+}
+.hudBtn:hover { background: rgba(201,162,39,.35); }
+
+/* ---- zones ---- */
+.zone { display: flex; align-items: center; gap: 18px; }
+#opponentZone { margin-top: 2px; }
+#playerZone { margin-top: auto; }
+.playerInfo { width: 300px; flex: none; }
+.playerName { font-size: 19px; font-weight: bold; letter-spacing: 2px; color: #ffe9a8; margin-bottom: 6px; text-shadow: 0 2px 3px rgba(0,0,0,.6); }
+.lifeBar {
+  position: relative; height: 26px; background: rgba(0,0,0,.55);
+  border: 2px solid #c9a227; border-radius: 13px; overflow: hidden;
+}
+.lifeFill { height: 100%; width: 100%; background: linear-gradient(90deg, #e2483d, #ff7a3d); transition: width .45s ease; }
+#opponentLifeFill { background: linear-gradient(90deg, #7a2fd6, #c65df0); }
+.lifeText {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: bold; letter-spacing: 1px; color: #fff; text-shadow: 0 1px 2px #000;
+}
+.tell, .hint { margin-top: 6px; font-size: 15px; font-style: italic; color: #d8e8c8; min-height: 20px; }
+.tell .auraGlyph { font-style: normal; font-size: 19px; margin-right: 4px; }
+
+/* ---- hands ---- */
+.hand { display: flex; gap: 10px; flex: 1; justify-content: center; min-height: 150px; align-items: center; }
+.opponentHand { justify-content: flex-start; }
+
+/* ---- cards ---- */
+.card {
+  width: 104px; height: 148px; flex: none; border-radius: 10px; position: relative;
+  background: linear-gradient(160deg, #fffdf5 0%, #f4ead2 100%);
+  border: 2px solid #2b1d12;
+  box-shadow: 0 4px 10px rgba(0,0,0,.55), inset 0 0 0 3px rgba(201,162,39,.35);
+  color: #241a10; cursor: default;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.card .corner { position: absolute; top: 5px; left: 7px; text-align: center; line-height: 1.05; }
+.card .corner .v { display: block; font-size: 30px; font-weight: bold; }
+.card .corner .s { display: block; font-size: 20px; }
+.card .corner.br { top: auto; left: auto; bottom: 5px; right: 7px; transform: rotate(180deg); }
+.card .pip { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 58px; }
+.card .crown { position: absolute; left: 0; right: 0; bottom: 30px; text-align: center; font-size: 12px; font-weight: bold; letter-spacing: 2px; color: #8a6d00; }
+.card.ember { color: #c22e1f; } .card.ember .pip { color: #c22e1f; }
+.card.tide  { color: #1458c9; } .card.tide .pip { color: #1458c9; }
+.card.thorn { color: #1d7a35; } .card.thorn .pip { color: #1d7a35; }
+.card.star  { color: #9a7400; } .card.star .pip { color: #b88900; }
+.card.back {
+  background:
+    repeating-linear-gradient(45deg, #7a1f16 0 10px, #93281d 10px 20px);
+  border-color: #3d0f0a;
+  box-shadow: 0 4px 10px rgba(0,0,0,.55), inset 0 0 0 4px #e8c85a, inset 0 0 0 8px #7a1f16;
+  cursor: default;
+}
+.card.back::after {
+  content: "▲"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 44px; color: #e8c85a; opacity: .85;
+}
+.playerHand .card { cursor: pointer; }
+.playerHand .card:hover { transform: translateY(-16px) scale(1.04); box-shadow: 0 12px 18px rgba(0,0,0,.6), inset 0 0 0 3px #c9a227; }
+.playerHand .card.selected { transform: translateY(-22px) scale(1.06); box-shadow: 0 0 0 3px #ffe9a8, 0 14px 20px rgba(0,0,0,.65); }
+.playerHand .card.playable { animation: cardBob 2.2s ease-in-out infinite; }
+@keyframes cardBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+.card.dealt { animation: dealIn .45s ease backwards; }
+@keyframes dealIn { from { transform: translateY(60px) rotate(6deg); opacity: 0; } to { transform: translateY(0) rotate(0); opacity: 1; } }
+.card.flipped { animation: flipIn .4s ease; }
+@keyframes flipIn { from { transform: rotateY(90deg) scale(.85); } to { transform: rotateY(0) scale(1); } }
+
+/* ---- midfield ---- */
+#midfield { display: flex; align-items: center; justify-content: center; gap: 34px; margin: 6px 0; min-height: 170px; }
+.playedSlot { width: 116px; height: 160px; display: flex; align-items: center; justify-content: center; }
+.playedSlot .slotHint {
+  width: 104px; height: 148px; border: 2px dashed rgba(255,233,168,.45); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; font-size: 13px; letter-spacing: 1px;
+  color: rgba(255,233,168,.6); text-align: center; padding: 8px;
+}
+.playedSlot .card { box-shadow: 0 8px 18px rgba(0,0,0,.65), inset 0 0 0 3px rgba(201,162,39,.5); }
+#versus { width: 300px; text-align: center; }
+.banner {
+  font-size: 26px; font-weight: bold; letter-spacing: 3px; color: #ffe9a8;
+  text-shadow: 0 3px 4px rgba(0,0,0,.7); min-height: 34px;
+}
+.banner.win { color: #8dff9a; } .banner.lose { color: #ff8d7a; }
+.detail { font-size: 15px; font-style: italic; color: #e6dcc0; min-height: 38px; margin-top: 4px; }
+.deckPile {
+  margin: 6px auto 0; width: 74px; height: 100px; border-radius: 8px; position: relative;
+  background: repeating-linear-gradient(45deg, #7a1f16 0 8px, #93281d 8px 16px);
+  border: 2px solid #3d0f0a; box-shadow: 3px 3px 0 #5d150d, 6px 6px 0 #47100a, 0 6px 12px rgba(0,0,0,.5);
+}
+.deckPile span {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 26px; font-weight: bold; color: #ffe9a8; text-shadow: 0 2px 3px #000;
+}
+.streakBadge {
+  position: absolute; right: 34px; top: 50%; transform: translateY(-50%) rotate(6deg);
+  background: #c9a227; color: #241a10; font-weight: bold; font-size: 18px; letter-spacing: 2px;
+  padding: 8px 14px; border-radius: 8px; border: 2px solid #ffe9a8; box-shadow: 0 4px 12px rgba(0,0,0,.6);
+  animation: streakPulse 1s ease-in-out infinite;
+}
+@keyframes streakPulse { 0%,100% { transform: translateY(-50%) rotate(6deg) scale(1); } 50% { transform: translateY(-50%) rotate(6deg) scale(1.08); } }
+.hidden { display: none !important; }
+
+/* ---- overlays ---- */
+.overlay {
+  position: absolute; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center;
+  background: rgba(12, 6, 14, .78);
+}
+.titleCard, .endCard {
+  width: 640px; max-width: 92vw; text-align: center; padding: 30px 36px 26px;
+  background: linear-gradient(170deg, #2b1a2e, #1a1020 70%);
+  border: 3px solid #c9a227; border-radius: 16px; box-shadow: 0 18px 50px rgba(0,0,0,.8);
+}
+.titleEmber { font-size: 30px; letter-spacing: 14px; color: #c9a227; }
+.titleCard h1, .endCard h1 {
+  font-size: 58px; letter-spacing: 8px; color: #ffe9a8; margin: 6px 0 8px;
+  text-shadow: 0 0 24px rgba(255,180,60,.55), 0 4px 6px rgba(0,0,0,.8);
+}
+.tagline { font-size: 18px; font-style: italic; color: #e6dcc0; line-height: 1.5; margin-bottom: 16px; }
+.rulesBox {
+  text-align: left; background: rgba(0,0,0,.35); border: 1px solid rgba(201,162,39,.5);
+  border-radius: 10px; padding: 12px 18px; margin-bottom: 18px; font-size: 16px; line-height: 1.65;
+}
+.ruleRow .ruleGlyph { display: inline-block; width: 26px; font-size: 18px; }
+.ruleGlyph.ember { color: #ff6a4d; } .ruleGlyph.tide { color: #5ea8ff; }
+.ruleGlyph.thorn { color: #6fdc8a; } .ruleGlyph.star { color: #ffd94d; }
+.ruleNote { margin-top: 8px; font-size: 14.5px; font-style: italic; color: #cfc4a4; line-height: 1.5; }
+.bigBtn {
+  font-family: inherit; font-size: 22px; font-weight: bold; letter-spacing: 3px;
+  color: #241a10; background: linear-gradient(180deg, #ffe9a8, #c9a227);
+  border: 2px solid #8a6d00; border-radius: 10px; padding: 13px 34px; cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0,0,0,.6);
+}
+.bigBtn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.bigBtn:active { transform: translateY(1px); }
+.keysHint { margin-top: 14px; font-size: 14px; color: #b8ab8d; }
+.endEmblem { font-size: 64px; line-height: 1; }
+#endScreen.win .endEmblem { color: #ffd94d; text-shadow: 0 0 30px rgba(255,217,77,.8); }
+#endScreen.loss .endEmblem { color: #8d94a8; text-shadow: 0 0 18px rgba(140,150,170,.5); }
+#endScreen.loss h1 { color: #c8ccd8; text-shadow: 0 4px 6px rgba(0,0,0,.8); }
+.endLine { font-size: 19px; font-style: italic; color: #e6dcc0; margin-bottom: 12px; }
+.endScore { font-size: 21px; font-weight: bold; letter-spacing: 2px; color: #ffe9a8; margin-bottom: 20px; }
+
+/* ---- confetti ---- */
+#confettiLayer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 30; }
+.confetti {
+  position: absolute; top: -14px; width: 10px; height: 16px; opacity: .95;
+  animation: confettiFall linear forwards;
+}
+@keyframes confettiFall {
+  to { transform: translateY(105vh) rotate(720deg); opacity: .7; }
+}
